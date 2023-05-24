@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"log"
+	"strconv"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -38,10 +39,32 @@ func (t *Tg) Listen() {
 		if update.CallbackQuery != nil {
 			txt := update.CallbackQuery.Data
 
-			if strings.Contains(txt, "id:") {
-				id := strings.Split(txt, ":")[1]
-				t.getStreams(id, *update.CallbackQuery)
+			if strings.Contains(txt, "uuid:") {
+				uuid := strings.Split(txt, ":")[1]
+				t.getStreams(uuid, *update.CallbackQuery)
 			}
+
+			sections := strings.Split(txt, ",")
+			if len(sections) >= 2 {
+				sport := ""
+				page := 1
+				for _, section := range sections {
+					if strings.Contains(section, "sport:") {
+						sport = strings.Split(section, ":")[1]
+					}
+					if strings.Contains(section, "page:") {
+						number, err := strconv.Atoi(strings.Split(section, ":")[1])
+						if err == nil {
+							page = number
+						}
+					}
+				}
+
+				if sport != "" {
+					t.paginate(*update.CallbackQuery, sport, page)
+				}
+			}
+
 		}
 
 		if update.Message != nil {
@@ -52,6 +75,8 @@ func (t *Tg) Listen() {
 				t.appCommand(update)
 			} else if txt == "/mma" {
 				t.mmaCommand(update)
+			} else if txt == "/football" {
+				t.footballCommand(update, 1)
 			}
 		}
 	}

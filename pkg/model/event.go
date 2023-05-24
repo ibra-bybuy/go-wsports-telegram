@@ -1,6 +1,9 @@
 package model
 
+import "strings"
+
 type Event struct {
+	Uuid         string   `json:"uuid" bson:"uuid"`
 	ID           string   `json:"id" bson:"id"`
 	Name         string   `json:"name" bson:"name"`
 	Teams        []Team   `json:"teams" bson:"teams"`
@@ -29,4 +32,14 @@ func (e *EventList) GetUniqueByName() EventList {
 	}
 
 	return items
+}
+
+func (e *Event) GetTeamsName() string {
+	teams := []string{}
+	for _, t := range e.Teams {
+		teams = append(teams, t.Name)
+	}
+
+	return strings.Join(teams, " - ")
+
 }

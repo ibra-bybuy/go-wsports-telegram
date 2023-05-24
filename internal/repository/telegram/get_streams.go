@@ -8,9 +8,9 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-// Command: /id:321
-func (t *Tg) getStreams(id string, callback tgbotapi.CallbackQuery) {
-	response := t.ctrl.GetByID(context.TODO(), id)
+// Command: /uuid:321
+func (t *Tg) getStreams(uuid string, callback tgbotapi.CallbackQuery) {
+	response := t.ctrl.GetByUuid(context.TODO(), uuid)
 	str := []string{}
 
 	if len(response.Data.Streams) > 0 {
@@ -18,7 +18,7 @@ func (t *Tg) getStreams(id string, callback tgbotapi.CallbackQuery) {
 			str = append(str, fmt.Sprintf("%s", stream.Link))
 		}
 	} else {
-		str = append(str, "no events yet")
+		str = append(str, "no streams yet")
 	}
 
 	callbackMsg := tgbotapi.CallbackConfig{

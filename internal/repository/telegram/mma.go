@@ -3,6 +3,7 @@ package telegram
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -21,7 +22,7 @@ func (t *Tg) mmaCommand(update tgbotapi.Update) {
 
 	for i, event := range filterItems {
 		str = append(str, fmt.Sprintf("%d. %s", i+1, event.Name))
-		markups = append(markups, tgbotapi.NewInlineKeyboardButtonData(fmt.Sprintf("%d", i+1), fmt.Sprintf("id:%s", event.ID)))
+		markups = append(markups, tgbotapi.NewInlineKeyboardButtonData(fmt.Sprintf("%d", i+1), fmt.Sprintf("uuid:%s", url.QueryEscape(event.Uuid))))
 	}
 
 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, strings.Join(str, "\n"))

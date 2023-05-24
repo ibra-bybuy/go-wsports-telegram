@@ -5,17 +5,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/ibra-bybuy/go-wsports-telegram/pkg/model"
 )
 
-func (r *repository) GetByID(ctx context.Context, id string) *model.SuccessEvent {
-	result := model.SuccessEvent{
-		Data: model.Event{
-			Streams: []model.Stream{},
-		},
-	}
-	url := r.baseURL + fmt.Sprintf("/events?id=%s", id)
+func (r *repository) GetByUuid(ctx context.Context, uuid string) *model.SuccessEvent {
+	result := model.SuccessEvent{}
+	v := url.Values{}
+	v.Add("uuid", uuid)
+	url := r.baseURL + fmt.Sprintf("/events?%s", v.Encode())
 	response, err := http.Get(url)
 	if err != nil {
 		return &result
