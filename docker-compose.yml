@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: "Dockerfile"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: always
     container_name: telegram_app
     env_file:
